@@ -1,15 +1,44 @@
-use crate::tokens::Tokens;
+use crate::token::Token;
 
+/// Lexer for the brainfuck source code, exposes only one method, namely `tokenize`.
+/// The responsibility of the lexer is to receive a code string and tokenize however
+/// many tokens are available into semantic tokens.
+///
+/// This lexer also reduces the tokens to a intermediate representation, where
+/// instead of having a `Token` for possibly every byte in the source code, we reduce
+/// it to an intermediate representation that collapses repeating tokens into a single
+/// one.
+///
+/// example:
+/// given the brainfuck source code `>>>-----..`; the lexer would produce a vector like
+/// the following
+/// ```rust
+/// let source = ">>>-----..";
+/// let expected = vec![
+///     Token::MoveRight(3),
+///     Token::Decrement(5),
+///     Token::Write(2),
+/// ];
+///
+/// let tokens = Lexer::tokenize(source);
+/// assert_eq!(tokens, expected);
+/// ```
 pub struct Lexer {}
 
 impl Lexer {
-    pub fn tokenize(input: &str) -> Vec<Tokens> {
+    /// given a input slice of source code, Lexer will try to tokenize it ignoring all
+    /// whitespaces and non-tokens and always give back a vector of tokens, which
+    /// could be empty if no valid tokens exists within the input string
+    ///
+    /// no validations are performed here purposefully, its not the responsibility of
+    /// the lexer to validate if the source code is valid.
+    pub fn tokenize(input: &str) -> Vec<Token> {
         let input = input.as_bytes();
         let mut tokens = vec![];
         let mut index = 0;
 
         while index < input.len() {
-            let token = Tokens::try_from(input[index]);
+            let token = Token::try_from(input[index]);
 
             // we couldn't convert the byte to a valid token, so we just consider it
             // a comment and skip over it
@@ -27,7 +56,7 @@ impl Lexer {
             // find a different one
             index += 1;
             while index < input.len() {
-                let next = Tokens::try_from(input[index]);
+                let next = Token::try_from(input[index]);
 
                 // again, if the byte is a non-valid brainfuck token, we just skip
                 // over it

@@ -1,2 +1,4 @@
 mod lexer;
-mod tokens;
+mod token;
+
+pub use lexer::Lexer;

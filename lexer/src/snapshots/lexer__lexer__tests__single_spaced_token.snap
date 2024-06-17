@@ -1,0 +1,9 @@
+---
+source: lexer/src/lexer.rs
+expression: tokens
+---
+[
+    MoveLeft(
+        4,
+    ),
+]

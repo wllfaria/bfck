@@ -1,4 +1,4 @@
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy)]
 pub enum Tokens {
     MoveLeft(usize),
     MoveRight(usize),
@@ -10,17 +10,33 @@ pub enum Tokens {
     JumpUnlessZero(usize),
 }
 
+impl PartialEq for Tokens {
+    fn eq(&self, other: &Self) -> bool {
+        matches!(
+            (self, other),
+            (Tokens::MoveLeft(_), Tokens::MoveLeft(_))
+                | (Tokens::MoveRight(_), Tokens::MoveRight(_))
+                | (Tokens::Increment(_), Tokens::Increment(_))
+                | (Tokens::Decrement(_), Tokens::Decrement(_))
+                | (Tokens::Write(_), Tokens::Write(_))
+                | (Tokens::Read(_), Tokens::Read(_))
+                | (Tokens::JumpIfZero(_), Tokens::JumpIfZero(_))
+                | (Tokens::JumpUnlessZero(_), Tokens::JumpUnlessZero(_))
+        )
+    }
+}
+
 impl Tokens {
-    pub fn count(&self) -> usize {
+    pub fn inner(&mut self) -> &mut usize {
         match self {
-            Tokens::MoveLeft(count) => *count,
-            Tokens::MoveRight(count) => *count,
-            Tokens::Increment(count) => *count,
-            Tokens::Decrement(count) => *count,
-            Tokens::Write(count) => *count,
-            Tokens::Read(count) => *count,
-            Tokens::JumpIfZero(count) => *count,
-            Tokens::JumpUnlessZero(count) => *count,
+            Tokens::MoveLeft(count) => count,
+            Tokens::MoveRight(count) => count,
+            Tokens::Increment(count) => count,
+            Tokens::Decrement(count) => count,
+            Tokens::Write(count) => count,
+            Tokens::Read(count) => count,
+            Tokens::JumpIfZero(count) => count,
+            Tokens::JumpUnlessZero(count) => count,
         }
     }
 }

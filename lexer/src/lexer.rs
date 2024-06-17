@@ -3,142 +3,62 @@ use crate::tokens::Tokens;
 pub struct Lexer {}
 
 impl Lexer {
-    pub fn parse(input: &str) -> Vec<Tokens> {
-        let mut tokens = vec![];
-        if input.is_empty() {
-            return tokens;
-        }
-
+    pub fn tokenize(input: &str) -> Vec<Tokens> {
         let input = input.as_bytes();
-        let mut position = 0;
+        let mut tokens = vec![];
+        let mut index = 0;
 
-        while Tokens::try_from(input[position]).is_err() && position < input.len() - 1 {
-            position += 1;
+        while index < input.len() {
+            let token = Tokens::try_from(input[index]);
+
+            // we couldn't convert the byte to a valid token, so we just consider it
+            // a comment and skip over it
+            if token.is_err() {
+                index += 1;
+                continue;
+            }
+
+            // its obviously safe to unwrap here since we check above, but lets make
+            // it clear this is intended!
+            assert!(token.is_ok(), "token was not valid yet we didn't skip it");
+            let mut token = token.unwrap();
+
+            // since we found a valid token, we will keep collecting tokens until we
+            // find a different one
+            index += 1;
+            while index < input.len() {
+                let next = Tokens::try_from(input[index]);
+
+                // again, if the byte is a non-valid brainfuck token, we just skip
+                // over it
+                if next.is_err() {
+                    index += 1;
+                    continue;
+                }
+
+                // if it is a valid token, but its a different one from the one we
+                // initially collected, we break out of this loop without
+                // incrementing the index, so the next outer loop iteration will
+                // resume from there
+                //
+                // its obviously safe to unwrap here since we check above, but lets make
+                // it clear this is intended!
+                assert!(next.is_ok(), "token was not valid yet we didn't skip it");
+                if next.unwrap().ne(&token) {
+                    break;
+                }
+
+                // if the tokens are the same, we increase the count of the token
+                // through the inner() helper and increase the index to we do the
+                // same with the next
+                *token.inner() += 1;
+                index += 1;
+            }
+
+            tokens.push(token);
         }
-
-        if position >= input.len() {
-            return tokens;
-        }
-
-        let first_token = match Tokens::try_from(input[position]) {
-            Ok(token) => token,
-            Err(_) => return tokens,
-        };
-        position += 1;
-
-        if position == input.len() - 1 {
-            tokens.push(first_token);
-            return tokens;
-        }
-
-        Lexer::reduce_tokens(input, position, first_token, &mut tokens);
 
         tokens
-    }
-
-    fn reduce_tokens(input: &[u8], position: usize, curr_token: Tokens, tokens: &mut Vec<Tokens>) {
-        if position >= input.len() && curr_token.count() > 0 {
-            tokens.push(curr_token);
-            return;
-        }
-        let next_char = input[position];
-        match (next_char, curr_token) {
-            (b'<', Tokens::MoveLeft(_)) => Lexer::reduce_tokens(
-                input,
-                position + 1,
-                Tokens::MoveLeft(curr_token.count() + 1),
-                tokens,
-            ),
-            (b'>', Tokens::MoveRight(_)) => {
-                Lexer::reduce_tokens(
-                    input,
-                    position + 1,
-                    Tokens::MoveRight(curr_token.count() + 1),
-                    tokens,
-                );
-            }
-            (b'+', Tokens::Increment(_)) => {
-                Lexer::reduce_tokens(
-                    input,
-                    position + 1,
-                    Tokens::Increment(curr_token.count() + 1),
-                    tokens,
-                );
-            }
-            (b'-', Tokens::Decrement(_)) => {
-                Lexer::reduce_tokens(
-                    input,
-                    position + 1,
-                    Tokens::Decrement(curr_token.count() + 1),
-                    tokens,
-                );
-            }
-            (b'.', Tokens::Write(_)) => {
-                Lexer::reduce_tokens(
-                    input,
-                    position + 1,
-                    Tokens::Write(curr_token.count() + 1),
-                    tokens,
-                );
-            }
-            (b',', Tokens::Read(_)) => {
-                Lexer::reduce_tokens(
-                    input,
-                    position + 1,
-                    Tokens::Read(curr_token.count() + 1),
-                    tokens,
-                );
-            }
-            (b'[', Tokens::JumpIfZero(_)) => {
-                Lexer::reduce_tokens(
-                    input,
-                    position + 1,
-                    Tokens::JumpIfZero(curr_token.count() + 1),
-                    tokens,
-                );
-            }
-            (b']', Tokens::JumpUnlessZero(_)) => {
-                Lexer::reduce_tokens(
-                    input,
-                    position + 1,
-                    Tokens::JumpUnlessZero(curr_token.count() + 1),
-                    tokens,
-                );
-            }
-            (b'<', _) => {
-                tokens.push(curr_token);
-                Lexer::reduce_tokens(input, position + 1, Tokens::MoveLeft(1), tokens);
-            }
-            (b'>', _) => {
-                tokens.push(curr_token);
-                Lexer::reduce_tokens(input, position + 1, Tokens::MoveRight(1), tokens);
-            }
-            (b'+', _) => {
-                tokens.push(curr_token);
-                Lexer::reduce_tokens(input, position + 1, Tokens::Increment(1), tokens);
-            }
-            (b'-', _) => {
-                tokens.push(curr_token);
-                Lexer::reduce_tokens(input, position + 1, Tokens::Decrement(1), tokens);
-            }
-            (b'.', _) => {
-                tokens.push(curr_token);
-                Lexer::reduce_tokens(input, position + 1, Tokens::Write(1), tokens);
-            }
-            (b',', _) => {
-                tokens.push(curr_token);
-                Lexer::reduce_tokens(input, position + 1, Tokens::Read(1), tokens);
-            }
-            (b'[', _) => {
-                tokens.push(curr_token);
-                Lexer::reduce_tokens(input, position + 1, Tokens::JumpIfZero(1), tokens);
-            }
-            (b']', _) => {
-                tokens.push(curr_token);
-                Lexer::reduce_tokens(input, position + 1, Tokens::JumpUnlessZero(1), tokens);
-            }
-            _ => Lexer::reduce_tokens(input, position + 1, curr_token, tokens),
-        }
     }
 }
 
@@ -148,21 +68,21 @@ mod tests {
 
     #[test]
     fn empty_input() {
-        let tokens = Lexer::parse("     ");
+        let tokens = Lexer::tokenize("     ");
         insta::assert_debug_snapshot!(tokens);
         assert!(tokens.is_empty());
     }
 
     #[test]
     fn single_spaced_token() {
-        let tokens = Lexer::parse("<<       <<");
+        let tokens = Lexer::tokenize("<<       <<");
         insta::assert_debug_snapshot!(tokens);
         assert_eq!(tokens.last().unwrap(), &Tokens::MoveLeft(4));
     }
 
     #[test]
     fn changing_tokens() {
-        let tokens = Lexer::parse("<<  >>");
+        let tokens = Lexer::tokenize("<<  >>");
         insta::assert_debug_snapshot!(tokens);
         assert_eq!(tokens.first().unwrap(), &Tokens::MoveLeft(2));
         assert_eq!(tokens.last().unwrap(), &Tokens::MoveRight(2));
@@ -170,9 +90,16 @@ mod tests {
 
     #[test]
     fn ignoring_non_tokens() {
-        let tokens = Lexer::parse(" _*  <<random_!?anything!!>!!>");
+        let tokens = Lexer::tokenize(" _*  <<random_!?anything!!>!!>");
         insta::assert_debug_snapshot!(tokens);
         assert_eq!(tokens.first().unwrap(), &Tokens::MoveLeft(2));
-        assert_eq!(tokens.last().unwrap(), &Tokens::MoveRight(2));
+    }
+
+    #[test]
+    fn pretty_hello_world() {
+        let code = include_str!("../../samples/hello_world_pretty.bf");
+        let tokens = Lexer::tokenize(code);
+        insta::assert_debug_snapshot!(tokens);
+        assert_eq!(tokens.len(), 58);
     }
 }

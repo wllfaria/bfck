@@ -66,40 +66,33 @@ impl Lexer {
 mod tests {
     use super::*;
 
+    fn check(input: &'static str) {
+        let tokens = Lexer::tokenize(input);
+        insta::assert_debug_snapshot!(tokens);
+    }
+
     #[test]
     fn empty_input() {
-        let tokens = Lexer::tokenize("     ");
-        insta::assert_debug_snapshot!(tokens);
-        assert!(tokens.is_empty());
+        check("     ");
     }
 
     #[test]
     fn single_spaced_token() {
-        let tokens = Lexer::tokenize("<<       <<");
-        insta::assert_debug_snapshot!(tokens);
-        assert_eq!(tokens.last().unwrap(), &Tokens::MoveLeft(4));
+        check("<<       <<");
     }
 
     #[test]
     fn changing_tokens() {
-        let tokens = Lexer::tokenize("<<  >>");
-        insta::assert_debug_snapshot!(tokens);
-        assert_eq!(tokens.first().unwrap(), &Tokens::MoveLeft(2));
-        assert_eq!(tokens.last().unwrap(), &Tokens::MoveRight(2));
+        check("<<  >>");
     }
 
     #[test]
     fn ignoring_non_tokens() {
-        let tokens = Lexer::tokenize(" _*  <<random_!?anything!!>!!>");
-        insta::assert_debug_snapshot!(tokens);
-        assert_eq!(tokens.first().unwrap(), &Tokens::MoveLeft(2));
+        check(" _*  <<random_!?anything!!>!!>");
     }
 
     #[test]
     fn pretty_hello_world() {
-        let code = include_str!("../../samples/hello_world_pretty.bf");
-        let tokens = Lexer::tokenize(code);
-        insta::assert_debug_snapshot!(tokens);
-        assert_eq!(tokens.len(), 58);
+        check(include_str!("../../samples/hello_world_pretty.bf"));
     }
 }

@@ -14,7 +14,25 @@ where
     fn increment_ptr(&mut self, count: usize, writer: &mut W, instruction_ptr: &mut usize);
     fn decrement_ptr(&mut self, count: usize, writer: &mut W, instruction_ptr: &mut usize);
     fn write_ptr(&mut self, count: usize, writer: &mut W, instruction_ptr: &mut usize);
-    fn read_ptr(&mut self, count: usize, writer: &mut W, reader: &mut R, instruction_ptr: &mut usize);
-    fn jump_if_zero(&mut self, count: usize, tokens: &[Token], writer: &mut W, instruction_ptr: &mut usize);
-    fn jump_unless_zero(&mut self, count: usize, tokens: &[Token], writer: &mut W, instruction_ptr: &mut usize);
+    fn read_ptr(
+        &mut self,
+        count: usize,
+        writer: &mut W,
+        reader: &mut R,
+        instruction_ptr: &mut usize,
+    );
+    fn jump_if_zero(
+        &mut self,
+        count: usize,
+        tokens: &[Token],
+        writer: &mut W,
+        instruction_ptr: &mut usize,
+    );
+    fn jump_unless_zero(
+        &mut self,
+        count: usize,
+        tokens: &[Token],
+        writer: &mut W,
+        instruction_ptr: &mut usize,
+    );
 }

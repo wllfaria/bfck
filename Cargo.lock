@@ -3,6 +3,14 @@
 version = 3
 
 [[package]]
+name = "compiler"
+version = "0.1.0"
+dependencies = [
+ "lexer",
+ "parser",
+]
+
+[[package]]
 name = "console"
 version = "0.15.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -76,6 +84,7 @@ dependencies = [
 name = "repl"
 version = "0.1.0"
 dependencies = [
+ "compiler",
  "interpreter",
  "lexer",
  "parser",

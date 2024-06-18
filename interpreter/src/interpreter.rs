@@ -95,7 +95,7 @@ where
     /// move the `data_ptr` `count` cells to the left, account for out of bounds
     /// by increasing the tape by `INCREMENT` stops to simulate a "infinite" tape
     /// as the specification suggests.
-    fn move_ptr_left(&mut self, count: usize, _: &mut W, instruction_ptr: &mut usize) {
+    fn move_ptr_left(&mut self, count: usize, _: &[Token], _: &mut W, instruction_ptr: &mut usize) {
         if count > self.data_ptr {
             let difference = count - self.data_ptr;
             let amount_of_increments = difference.div_ceil(INCREMENT);
@@ -108,7 +108,13 @@ where
     /// move the `data_ptr` `count` cells to the right, account for out of bounds
     /// by increasing the tape by `INCREMENT` stops to simulate a "infinite" tape
     /// as the specification suggests.
-    fn move_ptr_right(&mut self, count: usize, _: &mut W, instruction_ptr: &mut usize) {
+    fn move_ptr_right(
+        &mut self,
+        count: usize,
+        _: &[Token],
+        _: &mut W,
+        instruction_ptr: &mut usize,
+    ) {
         if self.data_ptr + count >= self.tape.len() {
             let new_len = self.data_ptr + count - self.tape.len();
             let new_len = usize::max(new_len, 1);
@@ -121,21 +127,27 @@ where
 
     /// increment the current cell on the `tape` pointed by `data_ptr`, wrapping
     /// when the value exceeds `u8::MAX`
-    fn increment_ptr(&mut self, count: usize, _: &mut W, instruction_ptr: &mut usize) {
+    fn increment_ptr(&mut self, count: usize, _: &[Token], _: &mut W, instruction_ptr: &mut usize) {
         self.tape[self.data_ptr] = self.tape[self.data_ptr].wrapping_add(count as u8);
         *instruction_ptr += 1;
     }
 
     /// decrement the current cell on the `tape` pointed by `data_ptr`, wrapping
     /// when the value would underflow below 0
-    fn decrement_ptr(&mut self, count: usize, _: &mut W, instruction_ptr: &mut usize) {
+    fn decrement_ptr(&mut self, count: usize, _: &[Token], _: &mut W, instruction_ptr: &mut usize) {
         self.tape[self.data_ptr] = self.tape[self.data_ptr].wrapping_sub(count as u8);
         *instruction_ptr += 1;
     }
 
     /// writes to stdout the contents of the current cell pointed by `data_ptr`
     /// as a `char` `count` times.
-    fn write_ptr(&mut self, count: usize, writer: &mut W, instruction_ptr: &mut usize) {
+    fn write_ptr(
+        &mut self,
+        count: usize,
+        _: &[Token],
+        writer: &mut W,
+        instruction_ptr: &mut usize,
+    ) {
         for _ in 0..count {
             _ = write!(writer, "{}", self.tape[self.data_ptr] as char);
         }
@@ -144,7 +156,14 @@ where
 
     /// read from stdin one byte at a time and add the byte to the current pointed
     /// cell
-    fn read_ptr(&mut self, count: usize, _: &mut W, reader: &mut R, instruction_ptr: &mut usize) {
+    fn read_ptr(
+        &mut self,
+        count: usize,
+        _: &[Token],
+        _: &mut W,
+        reader: &mut R,
+        instruction_ptr: &mut usize,
+    ) {
         for _ in 0..count {
             let mut byte = [0u8; 1];
 

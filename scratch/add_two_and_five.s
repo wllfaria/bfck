@@ -58,9 +58,8 @@ start:                              ; program entrypoint
     jmp exit                        ; exit happy
 
 ; jumps are implemented as 2 blocks, one for the comparation
-; and another separate one so we can loop when needed
-; the idea is to have all the "body" of the jump inside of the
-; body
+; and another separate one so we can loop when needed the idea
+; is to have all the "body" of the jump inside of the body
 j1z:
     cmp byte [ebx], 0               ; comparing against 0
     je brk                          ; since we are in a jump if zero, we break if 0

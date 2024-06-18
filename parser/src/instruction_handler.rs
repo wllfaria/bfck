@@ -9,14 +9,45 @@ where
     W: std::io::Write,
     R: std::io::Read,
 {
-    fn move_ptr_left(&mut self, count: usize, writer: &mut W, instruction_ptr: &mut usize);
-    fn move_ptr_right(&mut self, count: usize, writer: &mut W, instruction_ptr: &mut usize);
-    fn increment_ptr(&mut self, count: usize, writer: &mut W, instruction_ptr: &mut usize);
-    fn decrement_ptr(&mut self, count: usize, writer: &mut W, instruction_ptr: &mut usize);
-    fn write_ptr(&mut self, count: usize, writer: &mut W, instruction_ptr: &mut usize);
+    fn move_ptr_left(
+        &mut self,
+        count: usize,
+        tokens: &[Token],
+        writer: &mut W,
+        instruction_ptr: &mut usize,
+    );
+    fn move_ptr_right(
+        &mut self,
+        count: usize,
+        tokens: &[Token],
+        writer: &mut W,
+        instruction_ptr: &mut usize,
+    );
+    fn increment_ptr(
+        &mut self,
+        count: usize,
+        tokens: &[Token],
+        writer: &mut W,
+        instruction_ptr: &mut usize,
+    );
+    fn decrement_ptr(
+        &mut self,
+        count: usize,
+        tokens: &[Token],
+        writer: &mut W,
+        instruction_ptr: &mut usize,
+    );
+    fn write_ptr(
+        &mut self,
+        count: usize,
+        tokens: &[Token],
+        writer: &mut W,
+        instruction_ptr: &mut usize,
+    );
     fn read_ptr(
         &mut self,
         count: usize,
+        tokens: &[Token],
         writer: &mut W,
         reader: &mut R,
         instruction_ptr: &mut usize,
@@ -35,4 +66,5 @@ where
         writer: &mut W,
         instruction_ptr: &mut usize,
     );
+    fn finish(&mut self) {}
 }

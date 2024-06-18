@@ -3,6 +3,7 @@ use lexer::token::Token;
 
 use std::io::{Read, Write};
 
+#[derive(Debug)]
 pub struct Parser<W, R, I>
 where
     W: Write,
@@ -55,26 +56,31 @@ where
             match &tokens[self.instruction_ptr] {
                 Token::MoveLeft(count) => self.instruction_handler.move_ptr_left(
                     *count,
+                    &tokens,
                     &mut self.writer,
                     &mut self.instruction_ptr,
                 ),
                 Token::MoveRight(count) => self.instruction_handler.move_ptr_right(
                     *count,
+                    &tokens,
                     &mut self.writer,
                     &mut self.instruction_ptr,
                 ),
                 Token::Increment(count) => self.instruction_handler.increment_ptr(
                     *count,
+                    &tokens,
                     &mut self.writer,
                     &mut self.instruction_ptr,
                 ),
                 Token::Decrement(count) => self.instruction_handler.decrement_ptr(
                     *count,
+                    &tokens,
                     &mut self.writer,
                     &mut self.instruction_ptr,
                 ),
                 Token::Write(count) => self.instruction_handler.write_ptr(
                     *count,
+                    &tokens,
                     &mut self.writer,
                     &mut self.instruction_ptr,
                 ),
@@ -92,11 +98,13 @@ where
                 ),
                 Token::Read(count) => self.instruction_handler.read_ptr(
                     *count,
+                    &tokens,
                     &mut self.writer,
                     &mut self.reader,
                     &mut self.instruction_ptr,
                 ),
             }
         }
+        self.instruction_handler.finish();
     }
 }

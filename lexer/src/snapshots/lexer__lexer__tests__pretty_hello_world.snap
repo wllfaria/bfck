@@ -1,8 +1,65 @@
 ---
 source: lexer/src/lexer.rs
-expression: tokens
+expression: "check(include_str!(\"../../samples/hello_world_pretty.bf\"))"
 ---
 [
+    JumpIfZero(
+        1,
+    ),
+    Write(
+        1,
+    ),
+    JumpIfZero(
+        1,
+    ),
+    Write(
+        1,
+    ),
+    JumpUnlessZero(
+        1,
+    ),
+    Read(
+        1,
+    ),
+    Write(
+        2,
+    ),
+    Read(
+        3,
+    ),
+    Increment(
+        1,
+    ),
+    Read(
+        1,
+    ),
+    Decrement(
+        1,
+    ),
+    Read(
+        1,
+    ),
+    MoveLeft(
+        1,
+    ),
+    MoveRight(
+        1,
+    ),
+    Read(
+        1,
+    ),
+    JumpIfZero(
+        1,
+    ),
+    JumpUnlessZero(
+        1,
+    ),
+    Write(
+        2,
+    ),
+    JumpUnlessZero(
+        1,
+    ),
     Increment(
         8,
     ),

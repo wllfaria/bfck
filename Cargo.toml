@@ -1,7 +1,8 @@
 [workspace]
-members = ["lexer", "repl"]
+members = ["lexer", "repl", "parser"]
 default-members = ["repl"]
 resolver = "2"
 
 [workspace.dependencies]
 lexer = { path = "./lexer" }
+parser = { path = "./parser" }

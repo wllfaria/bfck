@@ -1,6 +1,6 @@
 ---
 source: lexer/src/lexer.rs
-expression: tokens
+expression: "check(\" _*  <<random_!?anything!!>!!>\")"
 ---
 [
     MoveLeft(

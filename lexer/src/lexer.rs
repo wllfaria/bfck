@@ -13,6 +13,9 @@ use crate::token::Token;
 /// given the brainfuck source code `>>>-----..`; the lexer would produce a vector like
 /// the following
 /// ```rust
+/// use lexer::Lexer;
+/// use lexer::token::Token;
+///
 /// let source = ">>>-----..";
 /// let expected = vec![
 ///     Token::MoveRight(3),
@@ -95,33 +98,32 @@ impl Lexer {
 mod tests {
     use super::*;
 
-    fn check(input: &'static str) {
-        let tokens = Lexer::tokenize(input);
-        insta::assert_debug_snapshot!(tokens);
+    fn check(input: &'static str) -> Vec<Token> {
+        Lexer::tokenize(input)
     }
 
     #[test]
     fn empty_input() {
-        check("     ");
+        insta::assert_debug_snapshot!(check("     "));
     }
 
     #[test]
     fn single_spaced_token() {
-        check("<<       <<");
+        insta::assert_debug_snapshot!(check("<<       <<"));
     }
 
     #[test]
     fn changing_tokens() {
-        check("<<  >>");
+        insta::assert_debug_snapshot!(check("<<  >>"));
     }
 
     #[test]
     fn ignoring_non_tokens() {
-        check(" _*  <<random_!?anything!!>!!>");
+        insta::assert_debug_snapshot!(check(" _*  <<random_!?anything!!>!!>"));
     }
 
     #[test]
     fn pretty_hello_world() {
-        check(include_str!("../../samples/hello_world_pretty.bf"));
+        insta::assert_debug_snapshot!(check(include_str!("../../samples/hello_world_pretty.bf")));
     }
 }

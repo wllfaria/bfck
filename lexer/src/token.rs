@@ -100,8 +100,8 @@ impl std::fmt::Display for Token {
         match self {
             Token::MoveLeft(count) => write!(f, "{}<", count),
             Token::MoveRight(count) => write!(f, "{}>", count),
-            Token::Increment(count) => write!(f, "{}-", count),
-            Token::Decrement(count) => write!(f, "{}+", count),
+            Token::Increment(count) => write!(f, "{}+", count),
+            Token::Decrement(count) => write!(f, "{}-", count),
             Token::Write(count) => write!(f, "{}.", count),
             Token::Read(count) => write!(f, "{},", count),
             Token::JumpIfZero(count) => write!(f, "{}[", count),

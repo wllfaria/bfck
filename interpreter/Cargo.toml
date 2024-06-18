@@ -1,9 +1,8 @@
 [package]
-name = "repl"
+name = "interpreter"
 version = "0.1.0"
 edition = "2021"
 
 [dependencies]
 lexer.workspace = true
 parser.workspace = true
-interpreter.workspace = true

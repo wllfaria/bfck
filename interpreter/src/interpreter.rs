@@ -196,11 +196,10 @@ where
             return;
         }
         let mut open_jumps = 1;
-        let start = *instruction_ptr;
         let mut index = *instruction_ptr + 1;
         while open_jumps != 0 {
             if index >= tokens.len() {
-                panic!("jump if zero defined at {start} is never closed");
+                break;
             }
 
             match tokens[index] {
@@ -359,13 +358,6 @@ mod tests {
         let parser = check(&source, std::io::Cursor::new(""));
         assert_eq!(parser.writer().data, "A");
         assert_eq!(parser.instruction_ptr(), 6);
-    }
-
-    #[test]
-    #[should_panic(expected = "jump if zero defined at 1 is never closed")]
-    fn non_closed_jump_if_zero() {
-        let source = "<<[<";
-        check(source, std::io::Cursor::new(""));
     }
 
     #[test]

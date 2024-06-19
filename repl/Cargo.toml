@@ -4,7 +4,8 @@ version = "0.1.0"
 edition = "2021"
 
 [dependencies]
+interpreter.workspace = true
 lexer.workspace = true
 parser.workspace = true
-interpreter.workspace = true
-compiler.workspace = true
+
+crossterm = { version = "0.27.0" }

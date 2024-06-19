@@ -151,7 +151,6 @@ where
         jump_header.push_str("    je _b\n");
         jump_header.push_str(&format!("    jne {}", jump_body_name));
 
-        let start = *instruction_ptr;
         let mut open_jumps = 1;
         *instruction_ptr += 1;
 
@@ -160,7 +159,7 @@ where
 
         while open_jumps != 0 {
             if *instruction_ptr >= tokens.len() {
-                panic!("jump if zero defined at {start} is never closed");
+                break;
             }
 
             match tokens[*instruction_ptr] {
@@ -233,7 +232,7 @@ where
         self.jump_list.push(jump_body);
     }
 
-    fn jump_unless_zero(&mut self, _: usize, _: &[Token], _: &mut W, instruction_ptr: &mut usize) {
+    fn jump_unless_zero(&mut self, _: usize, _: &[Token], _: &mut W, _: &mut usize) {
         // we handle the entire jump on the start of the jump, so we should
         // never reach this block
         unreachable!();

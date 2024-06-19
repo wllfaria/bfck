@@ -8,3 +8,7 @@ repl.workspace = true
 compiler.workspace = true
 
 clap = { version = "4.5.7" }
+
+[[bin]]
+name = "bfck"
+path = "src/main.rs"

@@ -24,26 +24,22 @@ _s:
 pub static MULTI_INC: &str = r#"_u:
     inc byte [ebx]
     loop _u
-    ret
-"#;
+    ret"#;
 
 pub static MULTI_DEC: &str = r#"_d:
-    inc byte [ebx]
+    dec byte [ebx]
     loop _d
-    ret
-"#;
+    ret"#;
 
 pub static MULTI_RIGHT: &str = r#"_r:
     inc ebx
     loop _r
-    ret
-"#;
+    ret"#;
 
 pub static MULTI_LEFT: &str = r#"_l:
     dec ebx
     loop _l
-    ret
-"#;
+    ret"#;
 
 pub static WRITE: &str = r#"_w:
     mov eax, Sw
@@ -51,5 +47,7 @@ pub static WRITE: &str = r#"_w:
     mov esi, ebx
     mov edx, 1
     syscall
-    ret
-"#;
+    ret"#;
+
+pub static BREAK: &str = r#"_b:
+    ret"#;

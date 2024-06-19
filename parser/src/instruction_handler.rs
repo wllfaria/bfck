@@ -66,5 +66,7 @@ where
         writer: &mut W,
         instruction_ptr: &mut usize,
     );
-    fn finish(&mut self) {}
+
+    #[allow(unused_variables)]
+    fn finish(&mut self, writer: &mut W) {}
 }

@@ -105,6 +105,6 @@ where
                 ),
             }
         }
-        self.instruction_handler.finish();
+        self.instruction_handler.finish(&mut self.writer);
     }
 }
